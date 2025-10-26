@@ -1,17 +1,26 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { colors, typography, spacing } from "@constants";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function SearchBar() {
+interface SearchBarProps {
+  onSearchPress?: () => void;
+  navigation?: any;
+}
+
+export default function SearchBar({ onSearchPress, navigation }: SearchBarProps) {
+  const handlePress = () => {
+    if (onSearchPress) {
+      onSearchPress();
+    } else if (navigation) {
+      navigation.navigate('ProductList', {});
+    }
+  };
+
   return (
-    <View style={styles.searchContainer}>
+    <TouchableOpacity style={styles.searchContainer} onPress={handlePress}>
       <Ionicons name="search" size={20} color={colors.search.placeholder} />
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search Har Jarurat..."
-        placeholderTextColor={colors.search.placeholder}
-      />
-    </View>
+      <Text style={styles.searchInputPlaceholder}>Search Har Jarurat...</Text>
+    </TouchableOpacity>
   );
 }
 
@@ -26,9 +35,9 @@ const styles = StyleSheet.create({
     borderRadius: spacing.borderRadius.lg,
     marginBottom: spacing.padding.md,
   },
-  searchInput: {
+  searchInputPlaceholder: {
     ...typography.textStyles.searchPlaceholder,
-    color: colors.search.text,
+    color: colors.search.placeholder,
     marginLeft: spacing.sm,
     flex: 1,
   },

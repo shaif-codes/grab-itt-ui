@@ -8,12 +8,14 @@ interface RelatedProductsProps {
   products: Product[];
   onProductPress: (productId: string) => void;
   onAddToCart: (productId: string, quantity: number) => void;
+  onSeeAll?: () => void;
 }
 
 export default function RelatedProducts({ 
   products, 
   onProductPress, 
-  onAddToCart 
+  onAddToCart,
+  onSeeAll
 }: RelatedProductsProps) {
   if (products.length === 0) return null;
 
@@ -21,10 +23,12 @@ export default function RelatedProducts({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Related Products</Text>
-        <TouchableOpacity style={styles.seeAllButton}>
-          <Text style={styles.seeAllText}>See All</Text>
-          <Ionicons name="chevron-forward" size={16} color={colors.primary} />
-        </TouchableOpacity>
+        {onSeeAll && (
+          <TouchableOpacity style={styles.seeAllButton} onPress={onSeeAll}>
+            <Text style={styles.seeAllText}>See All</Text>
+            <Ionicons name="chevron-forward" size={16} color={colors.primary} />
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView 
@@ -34,11 +38,12 @@ export default function RelatedProducts({
       >
         {products.map((product, index) => (
           <View key={index} style={styles.productItem}>
-            <ProductCard 
+            <ProductCard
               product={product} 
               onAddToCart={onAddToCart}
               onProductPress={onProductPress}
-              compact={true}
+              compact={false}
+              horizontal={true}
             />
           </View>
         ))}
@@ -75,10 +80,11 @@ const styles = StyleSheet.create({
   },
   productsContainer: {
     paddingHorizontal: spacing.padding.sm,
+    paddingRight: spacing.padding.md,
+    gap: spacing.padding.sm,
   },
   productItem: {
-    width: 160,
+    width: 200,
     marginRight: spacing.padding.sm,
-    paddingRight: 0,
   },
 });

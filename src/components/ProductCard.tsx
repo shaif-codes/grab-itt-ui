@@ -25,47 +25,52 @@ interface ProductCardProps {
   onAddToCart: (productId: string, quantity: number) => void;
   onProductPress: (productId: string) => void;
   compact?: boolean;
+  horizontal?: boolean;
 }
 
-export default function ProductCard({ product, onAddToCart, onProductPress, compact = false }: ProductCardProps) {
+export default function ProductCard({ product, onAddToCart, onProductPress, compact = false, horizontal = false }: ProductCardProps) {
   return (
-    <TouchableOpacity 
-      style={styles.productCard}
-      onPress={() => onProductPress(product.id)}
-    >
-      <View style={styles.productImageContainer}>
-        <Image source={{ uri: product.image }} style={styles.productImage} />
-        {product.discount && (
-          <Tag 
-            text={`${product.discount}% off`} 
-            type={TAGS.ERROR} 
-            extraStyle={styles.discountBadge} 
-          />
-        )}
-        {!product.inStock && (
-          <View style={styles.outOfStockOverlay}>
-            <Text style={styles.outOfStockText}>Out of Stock</Text>
-          </View>
-        )}
-      </View>
-      
-      <View style={[styles.productInfo, compact && styles.compactProductInfo]}>
-        <Text style={styles.productName} numberOfLines={1}>{product.name}</Text>
-        <Text style={styles.productCategory}>{product.category}</Text>
-        
-        <View style={styles.ratingContainer}>
-          <Ionicons name="star" size={14} color={colors.warning} />
-          <Text style={styles.ratingText}>{product.rating}</Text>
-          <Text style={styles.reviewsText}>({product.reviews})</Text>
-        </View>
-        
-        <View style={styles.priceContainer}>
-          <Text style={styles.currentPrice}>₹{product.price}</Text>
-          {product.originalPrice && (
-            <Text style={styles.originalPrice}>₹{product.originalPrice}</Text>
+    <View style={horizontal ? styles.horizontalCard : styles.productCard}>
+      <TouchableOpacity 
+        activeOpacity={0.9}
+        onPress={() => onProductPress(product.id)}
+      >
+        <View style={styles.productImageContainer}>
+          <Image source={{ uri: product.image }} style={styles.productImage} />
+          {product.discount && (
+            <Tag 
+              text={`${product.discount}% off`} 
+              type={TAGS.ERROR} 
+              extraStyle={styles.discountBadge} 
+            />
+          )}
+          {!product.inStock && (
+            <View style={styles.outOfStockOverlay}>
+              <Text style={styles.outOfStockText}>Out of Stock</Text>
+            </View>
           )}
         </View>
         
+        <View style={[styles.productInfo, compact && styles.compactProductInfo]}>
+          <Text style={styles.productName} numberOfLines={1}>{product.name}</Text>
+          <Text style={styles.productCategory}>{product.category}</Text>
+          
+          <View style={styles.ratingContainer}>
+            <Ionicons name="star" size={14} color={colors.warning} />
+            <Text style={styles.ratingText}>{product.rating}</Text>
+            <Text style={styles.reviewsText}>({product.reviews})</Text>
+          </View>
+          
+          <View style={styles.priceContainer}>
+            <Text style={styles.currentPrice}>₹{product.price}</Text>
+            {product.originalPrice && (
+              <Text style={styles.originalPrice}>₹{product.originalPrice}</Text>
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
+      
+      <View style={styles.buttonContainer}>
         <Button
           title="Add to Cart"
           onPress={() => onAddToCart(product.id, 1)}
@@ -75,13 +80,25 @@ export default function ProductCard({ product, onAddToCart, onProductPress, comp
           disabled={!product.inStock}
         />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   productCard: {
     width: '48%',
+    backgroundColor: colors.background.primary,
+    borderRadius: spacing.borderRadius.lg,
+    marginBottom: spacing.padding.md,
+    elevation: 2,
+    shadowColor: colors.shadow.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    overflow: 'hidden',
+  },
+  horizontalCard: {
+    flex: 1,
     backgroundColor: colors.background.primary,
     borderRadius: spacing.borderRadius.lg,
     marginBottom: spacing.padding.md,
@@ -167,6 +184,10 @@ const styles = StyleSheet.create({
     ...typography.textStyles.caption,
     color: colors.text.secondary,
     textDecorationLine: 'line-through',
+  },
+  buttonContainer: {
+    paddingHorizontal: spacing.padding.sm,
+    paddingBottom: spacing.padding.sm,
   },
   addToCartButton: {
     paddingVertical: spacing.padding.xs,

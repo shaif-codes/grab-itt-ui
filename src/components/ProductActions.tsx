@@ -182,11 +182,12 @@ const styles = StyleSheet.create({
     gap: spacing.padding.sm,
   },
   wishlistButton: {
-    padding: spacing.padding.md,
+    padding: spacing.padding.sm,
     backgroundColor: colors.background.secondary,
     borderRadius: spacing.borderRadius.md,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginRight: spacing.padding.lg,
   },
   cartButtonContainer: {
     flex: 1,

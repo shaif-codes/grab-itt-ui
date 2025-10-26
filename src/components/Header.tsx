@@ -1,18 +1,31 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { colors, typography, spacing } from "@constants";
 import { Ionicons } from "@expo/vector-icons";
+import { useAppSelector } from "../store/hooks";
 
 interface HeaderProps {
   showBadges?: boolean;
   onlyBadges?: boolean;
   headerHeading?: string;
-  showBackBtn?: boolean
+  showBackBtn?: boolean;
+  onBackPress?: () => void;
+  onCartPress?: () => void;
+  onNotificationPress?: () => void;
 }
 
-export default function Header({ showBadges = true, onlyBadges = false, headerHeading = "" , showBackBtn = false}: HeaderProps) {
+export default function Header({ showBadges = true, onlyBadges = false, headerHeading = "" , showBackBtn = false, onBackPress, onCartPress, onNotificationPress}: HeaderProps) {
+  const cartCount = useAppSelector(state => state.cart.itemCount);
+  const unreadCount = useAppSelector(state => 
+    state.notifications.notifications.filter(n => !n.read).length
+  );
+  
   return (
       <View style={styles.header}>
-        {!onlyBadges && (
+        {showBackBtn ? (
+          <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color={colors.text.primary} />
+          </TouchableOpacity>
+        ) : !onlyBadges && (
           <View style={styles.logoContainer}>
           <Image
             source={require("@assets/images/logo.png")}
@@ -29,14 +42,14 @@ export default function Header({ showBadges = true, onlyBadges = false, headerHe
         )}
         {showBadges && (
           <View style={styles.badgeContainer}>
-          <View style={styles.badge}>
+          <TouchableOpacity style={styles.badge} onPress={onCartPress}>
             <Ionicons name="cart-outline" size={20} color={colors.text.primary} />
-            <Text style={styles.badgeText}>1</Text>
-          </View>
-          <View style={styles.badge}>
+            {cartCount > 0 && <Text style={styles.badgeText}>{cartCount}</Text>}
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.badge} onPress={onNotificationPress}>
             <Ionicons name="notifications-outline" size={20} color={colors.text.primary} />
-            <Text style={styles.badgeText}>3</Text>
-            </View>
+            {unreadCount > 0 && <Text style={styles.badgeText}>{unreadCount}</Text>}
+          </TouchableOpacity>
           </View>
         )}
       </View>
@@ -103,5 +116,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     ...typography.textStyles.h1,
     color: colors.text.primary,
+  },
+  backButton: {
+    padding: spacing.padding.sm,
+    marginRight: spacing.padding.xs,
   },
 });

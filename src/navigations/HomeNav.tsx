@@ -6,6 +6,9 @@ import OrdersScreen from "../screens/OrdersScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ProductList from "../screens/ProductList";
 import ProductDetail from "../screens/ProductDetail";
+import CartScreen from "../screens/CartScreen";
+import SearchScreen from "../screens/SearchScreen";
+import NotificationsScreen from "../screens/NotificationsScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { RootTabParamList, RootStackParamList } from "../types/navigation";
 import { colors, typography, spacing } from "../constants";
@@ -92,6 +95,9 @@ export default function HomeNav() {
         <Stack.Screen name="MainTabs" component={TabNavigator} />
         <Stack.Screen name="ProductList" component={ProductList} />
         <Stack.Screen name="ProductDetail" component={ProductDetail} />
+        <Stack.Screen name="Cart" component={CartScreen} />
+        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

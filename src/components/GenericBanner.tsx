@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -5,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ImageSourcePropType,
+  ActivityIndicator,
 } from "react-native";
 import { colors, typography, spacing } from "@constants";
 
@@ -14,6 +16,7 @@ interface GenericBannerProps {
   buttonText?: string;
   buttonAction?: () => void;
   bannerImagePath?: ImageSourcePropType;
+  imageUrl?: string;
   onlyImage?: boolean;
 }
 
@@ -23,13 +26,40 @@ export default function GenericBanner({
   buttonText,
   buttonAction,
   bannerImagePath,
+  imageUrl,
   onlyImage = false,
 }: GenericBannerProps) {
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+
   return (
     <View style={styles.banner}>
       <Text style={styles.bannerTitle}>{title}</Text>
-      {bannerImagePath && (
-        <Image source={bannerImagePath} style={styles.bannerImage} />
+      {(bannerImagePath || imageUrl) && (
+        <View style={styles.imageContainer}>
+          {imageLoading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          )}
+          {!imageError && imageUrl ? (
+            <Image 
+              source={{ uri: imageUrl }} 
+              style={styles.bannerImage}
+              onLoadStart={() => setImageLoading(true)}
+              onLoadEnd={() => setImageLoading(false)}
+              onError={() => {
+                setImageError(true);
+                setImageLoading(false);
+              }}
+            />
+          ) : bannerImagePath ? (
+            <Image 
+              source={bannerImagePath} 
+              style={styles.bannerImage}
+            />
+          ) : null}
+        </View>
       )}
       {!onlyImage && <Text style={styles.bannerSubtitle}>{subtitle}</Text>}
       {buttonText && (
@@ -49,11 +79,25 @@ const styles = StyleSheet.create({
     borderRadius: spacing.borderRadius.lg,
     marginBottom: spacing.padding.lg,
   },
+  imageContainer: {
+    width: "100%",
+    height: 400,
+    borderRadius: spacing.borderRadius.lg,
+    overflow: "hidden",
+  },
   bannerImage: {
     width: "100%",
     height: 400,
     resizeMode: "cover",
     borderRadius: spacing.borderRadius.lg,
+  },
+  loadingContainer: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.gray[100],
   },
   bannerTitle: {
     ...typography.textStyles.bannerTitle,

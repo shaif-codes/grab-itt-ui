@@ -8,15 +8,23 @@ interface CategoriesProps {
     icon: keyof typeof Ionicons.glyphMap;
     description: string;
   }[];
+  navigation: any;
 }
 
-export default function Categories({ categories }: CategoriesProps) {
+export default function Categories({ categories, navigation }: CategoriesProps) {
+  const handleCategoryPress = (categoryName: string) => {
+    navigation.navigate('ProductList', { category: categoryName });
+  };
   return (
     <View style={styles.categoriesContainer}>
       <Text style={styles.sectionTitle}>Categories</Text>
       <View style={styles.categoriesGrid}>
         {categories.map((category, index) => (
-          <TouchableOpacity style={styles.categoryCard} key={index}>
+          <TouchableOpacity 
+            style={styles.categoryCard} 
+            key={index}
+            onPress={() => handleCategoryPress(category.name)}
+          >
           <View style={styles.categoryIcon}>
             <Ionicons name={category.icon} size={24} color={colors.text.primary} />
           </View>
